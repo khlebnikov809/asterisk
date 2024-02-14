@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка файлов</title>
+</head>
+<body>
+    <h1>Загрузка файлов</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" multiple>
+        <input type="submit" value="Загрузить">
+    </form>
+
+    <p>Список загруженных файлов:</p>
+    <ul>
+        {% for file in files %}
+        <li><a href="/download?uuid={{ file.uuid }}">{{ file.filename }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#upload-form").submit(function(e) {
+                e.preventDefault();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "/upload",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        console.log(data);
+                        alert("Файл успешно загружен!");
+                        location.reload();
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert("Ошибка при загрузке файла!");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
